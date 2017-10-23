@@ -212,7 +212,7 @@ class GridStats(object):
       return self.raw[self.rows[row]][self.cols[col]]
     except:
       pass
-    if default:
+    if default is not None:
       return default
     else:
       raise ValueError('row={0} col={1} doesn\'t exist'.format(row, col))
