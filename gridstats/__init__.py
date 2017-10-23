@@ -29,6 +29,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
 """
 
-from .gridstats import GridStats
+from .GridStats import GridStats
 
 __version__ = '1.0.0'

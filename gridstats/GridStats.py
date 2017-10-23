@@ -48,21 +48,21 @@ class GridStats(object):
     self.rows = {}
     self.cols = {}
 
-  def create(self, rows, cols):
+  def create(self, head, rows, cols):
     """
     Constructs an empty grid with the specified row and column names.
 
     Args:
-      rows (list) : names of rows
-      cols (list) : names of cols (include [0][0] element)
+      head (str)      : element of [0,0]
+      rows (list/set) : names of rows
+      cols (list/set) : names of cols
     """
     self.raw = None
     self.rows = {}
     self.cols = {}
 
-    # transform into strings
-    rows = [str(x) for x in rows]
-    cols = [str(x) for x in cols]
+    # add head to the beginning of cols
+    cols = [head] + cols
 
     # initialize empty 2D array
     self.raw = []
@@ -115,17 +115,16 @@ class GridStats(object):
           raise ValueError('number of columns is not constant')
 
       # transform values
-      if len(self.raw) > 0:
-        for idx in range(1, len(cols)):
-          col = cols[idx]
+      for idx in range(0, len(cols)):
+        col = cols[idx]
+        try:
+          col = int(col)
+        except ValueError:
           try:
-            col = int(col)
+            col = float(col)
           except ValueError:
-            try:
-              col = float(col)
-            except ValueError:
-              col = str(col)
-          cols[idx] = col
+            col = str(col)
+        cols[idx] = col
 
       # push new row into rows list
       self.raw.append(cols)
@@ -135,10 +134,51 @@ class GridStats(object):
       if self.raw[rowIdx][0] in self.rows:
         raise ValueError('duplicate row name detected')
       self.rows[self.raw[rowIdx][0]] = rowIdx
+    if len(self.raw) > 0:
+      for colIdx in range(1, len(self.raw[0])):
+        if self.raw[0][colIdx] in self.cols:
+          raise ValueError('duplicate column name detected')
+        self.cols[self.raw[0][colIdx]] = colIdx
+
+  def head(self):
+    """
+    Returns:
+      the head string
+    """
+    # empty
+    if len(self.raw) == 0:
+      return None
+    # filled
+    return self.raw[0][0]
+
+  def columnNames(self):
+    """
+    Returns:
+      list of column names
+    """
+    # empty
+    if len(self.raw) == 0:
+      return []
+    # filled
+    cols = []
     for colIdx in range(1, len(self.raw[0])):
-      if self.raw[colIdx][0] in self.cols:
-        raise ValueError('duplicate column name detected')
-      self.cols[self.raw[0][colIdx]] = colIdx
+      cols.append(self.raw[0][colIdx])
+    return cols
+
+  def rowNames(self):
+    """
+    Returns:
+      list of row names
+    """
+    # empty
+    if len(self.raw) == 0:
+      return []
+    # filled
+    rows = []
+    for rowIdx in range(1, len(self.raw)):
+      rows.append(self.raw[rowIdx][0])
+    return rows
+
 
   def write(self, filename):
     """
@@ -156,46 +196,33 @@ class GridStats(object):
       for row in self.raw:
         fd.write(bytes(','.join([str(x) for x in row]) + '\n', 'utf-8'))
 
-  def get(self, row, col, safe=False):
+  def get(self, row, col, default=None):
     """
-    Gets a value. May give indices or string values.
+    Gets a value by reference of row and column
 
     Args:
-      row (int or str) : row specifier (index or name)
-      col (int or str) : col specifier (index or name)
-      safe (bool) : not safe returns float('inf') if out of bounds in name mode
+      row     : row specifier
+      col     : col specifier
+      default : default value to return if none exists
+
+    Returns:
+      value in grid
     """
-    if isinstance(row, int) and isinstance(col, int):
-      return self.raw[row][col]
-    elif isinstance(row, str) and isinstance(col, str):
-      try:
-        return self.raw[self.rows[row]][self.cols[col]]
-      except:
-        pass
-      if not safe:
-        return float('inf')
-      else:
-        raise ValueError('row={0} col={1} doesn\'t exist'.format(row, col))
+    try:
+      return self.raw[self.rows[row]][self.cols[col]]
+    except:
+      pass
+    if default:
+      return default
     else:
-      raise ValueError('invalid row and col types')
+      raise ValueError('row={0} col={1} doesn\'t exist'.format(row, col))
 
   def set(self, row, col, val):
     """
-    Sets a value. May give indices or string values.
+    Sets a value by reference of row and column
 
     Args:
-      row (int or str) : row specifier (index or name)
-      col (int or str) : col specifier (index or name)
+      row     : row specifier
+      col     : col specifier
     """
-    if not (isinstance(val, int) or
-            isinstance(val, float) or
-            isinstance(val, str)):
-      raise ValueError('invalid type given')
-    if isinstance(row, int) and isinstance(col, int):
-      if row < 1 or col < 1:
-        raise ValueError('you can not modify row 0 or column 0')
-      self.raw[row][col] = val
-    elif isinstance(row, str) and isinstance(col, str):
-      self.raw[self.rows[row]][self.cols[col]] = val
-    else:
-      raise ValueError('invalid row and col types')
+    self.raw[self.rows[row]][self.cols[col]] = val
