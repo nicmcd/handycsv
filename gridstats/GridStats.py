@@ -151,7 +151,7 @@ class GridStats(object):
     # filled
     return self.raw[0][0]
 
-  def columnNames(self):
+  def column_names(self):
     """
     Returns:
       list of column names
@@ -165,7 +165,7 @@ class GridStats(object):
       cols.append(self.raw[0][colIdx])
     return cols
 
-  def rowNames(self):
+  def row_names(self):
     """
     Returns:
       list of row names
