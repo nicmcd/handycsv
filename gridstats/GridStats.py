@@ -160,10 +160,7 @@ class GridStats(object):
     if len(self.raw) == 0:
       return []
     # filled
-    cols = []
-    for colIdx in range(1, len(self.raw[0])):
-      cols.append(self.raw[0][colIdx])
-    return cols
+    return [self.raw[0][colIdx] for colIdx in range(1, len(self.raw[0]))]
 
   def row_names(self):
     """
@@ -174,11 +171,7 @@ class GridStats(object):
     if len(self.raw) == 0:
       return []
     # filled
-    rows = []
-    for rowIdx in range(1, len(self.raw)):
-      rows.append(self.raw[rowIdx][0])
-    return rows
-
+    return [self.raw[rowIdx][0] for rowIdx in range(1, len(self.raw))]
 
   def write(self, filename):
     """
@@ -226,3 +219,15 @@ class GridStats(object):
       col     : col specifier
     """
     self.raw[self.rows[row]][self.cols[col]] = val
+
+  def get_column(self, col):
+    """
+    Retrieves a list of value from a full column
+
+    Args:
+      col     : col specifier
+
+    Returns:
+      (list)  : the values in the column
+    """
+    return [self.get(row, col) for row in self.row_names()]
