@@ -47,6 +47,7 @@ class GridStats(object):
     self.raw = None
     self.rows = {}
     self.cols = {}
+    self.source = None
 
   def create(self, head, rows, cols):
     """
@@ -96,6 +97,7 @@ class GridStats(object):
     self.raw = None
     self.rows = {}
     self.cols = {}
+    self.source = filename
 
     # open file and get all lines
     opener = gzip.open if filename.endswith('.gz') else open
