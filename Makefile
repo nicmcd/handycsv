@@ -1,4 +1,4 @@
-PYPKG := gridstats
+PYPKG := simplecsv
 
 .SUFFIXES:
 .PHONY: help install clean

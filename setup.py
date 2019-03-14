@@ -42,23 +42,22 @@ except:
   sys.exit(-1)
 
 def find_version(*file_paths):
-    version_file = codecs.open(os.path.join(os.path.abspath(
-        os.path.dirname(__file__)), *file_paths), 'r').read()
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
-
+  version_file = codecs.open(os.path.join(os.path.abspath(
+      os.path.dirname(__file__)), *file_paths), 'r').read()
+  version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                            version_file, re.M)
+  if version_match:
+    return version_match.group(1)
+  raise RuntimeError("Unable to find version string.")
 
 setup(
-    name='gridstats',
-    version=find_version('gridstats', '__init__.py'),
-    description='2D CSV files as grids',
+    name='simplecsv',
+    version=find_version('simplecsv', '__init__.py'),
+    description='CSV files as objects',
     author='Nic McDonald',
     author_email='nicci02@hotmail.com',
     license='BSD',
-    url='http://github.com/nicmcd/gridstats',
-    packages=['gridstats'],
+    url='http://github.com/nicmcd/simplecsv',
+    packages=['simplecsv'],
     install_requires=[],
-    )
+)
