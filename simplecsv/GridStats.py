@@ -117,7 +117,7 @@ class GridStats(object):
           raise ValueError('number of columns is not constant')
 
       # transform values
-      for idx in range(1, len(cols)):
+      for idx in range(0, len(cols)):
         col = cols[idx]
         try:
           col = int(col)
