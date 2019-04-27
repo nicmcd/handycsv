@@ -57,7 +57,7 @@ class ColumnStats(object):
     self.raw = {}
     self.source = None
     for row in rows:
-      self._data[row] = None
+      self.raw[row] = None
 
   def read(self, filename):
     """
