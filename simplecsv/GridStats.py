@@ -34,6 +34,8 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import gzip
+import re
+
 
 class GridStats(object):
   """
@@ -86,24 +88,20 @@ class GridStats(object):
         raise ValueError('duplicate column name detected')
       self.cols[cols[colIdx]] = colIdx
 
-  def read(self, filename):
+  def load(self, text):
     """
-    Constructs a 2D grid from a 2D CSV file
+    Constructs a 2D grid from a 2D string
     Values default to int, then float, then str
 
     Args:
-      filename (str) : name of file to open (auto .gz if given)
+      text (str) : text of the grid
     """
     self.raw = None
     self.rows = {}
     self.cols = {}
-    self.source = filename
 
-    # open file and get all lines
-    opener = gzip.open if filename.endswith('.gz') else open
-    with opener(filename, 'rb') as fd:
-      lines = fd.readlines()
-    lines = [line.decode('utf-8') for line in lines]
+    # break text into lines
+    lines = text.strip().split('\n')
 
     # break lines into raw data (columnar pieces)
     self.raw = []
@@ -141,6 +139,22 @@ class GridStats(object):
         if self.raw[0][colIdx] in self.cols:
           raise ValueError('duplicate column name detected')
         self.cols[self.raw[0][colIdx]] = colIdx
+
+  def read(self, filename):
+    """
+    Constructs a 2D grid from a 2D CSV file
+    Values default to int, then float, then str
+
+    Args:
+      filename (str) : name of file to open (auto .gz if given)
+    """
+    self.source = filename
+
+    # open file and get all lines
+    opener = gzip.open if filename.endswith('.gz') else open
+    with opener(filename, 'rb') as fd:
+      text = fd.read().decode('utf-8')
+    return self.load(text)
 
   def head(self):
     """
@@ -234,3 +248,54 @@ class GridStats(object):
       (list)  : the values in the column
     """
     return [self.get(row, col) for row in self.row_names()]
+
+  def remove_row(self, row):
+    """
+    This removes the specified row.
+
+    Args:
+      row (str) : the row identifier
+    """
+    if row not in self.rows:
+      raise ValueError('row "{}" is not an existing row'.format(row))
+
+    found = False
+    for arow in list(self.rows.keys()):
+      if arow == row:
+        assert not found
+        self.raw.pop(self.rows[row])
+        self.rows.pop(row)
+        found = True
+      elif found:
+        self.rows[arow] -= 1
+    assert found
+
+  def filter_rows(self, column, regex, invert=False):
+    """
+    This filter the data into a subset. It removes rows wherein the value of the
+    identified column matches the specified regular expression. If invert is
+    False only the matching rows will be retained. If invert is True only the
+    non matching rows will be retained.
+
+    Args:
+      col (str)   : the column specifier
+      regex (str) : the regular expression to match
+
+    Returns:
+      removed ([str]) : the removed row identifiers
+    """
+    if column not in self.cols:
+      raise ValueError('column "{}" is not an existing column'.format(column))
+
+    removed = []
+    for row in self.row_names():
+      # determine if matched
+      value_str = str(self.get(row, column))
+      matched = re.match(regex, value_str)
+
+      # remove if applicable
+      if (not invert and matched) or (invert and not matched):
+        self.remove_row(row)
+        removed.append(row)
+
+    return removed

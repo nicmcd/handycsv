@@ -59,22 +59,18 @@ class ColumnStats(object):
     for row in rows:
       self.raw[row] = None
 
-  def read(self, filename):
+  def load(self, text):
     """
-    Constructs a statistics structure from a 1D CSV file
+    Constructs a statistics structure from 1D CSV txt.
     Values default to int, then float, then str
 
     Args:
-      filename (str) : name of file to open (auto .gz if given)
+      text (str) : 1D CSV txt
     """
     self.raw = {}
-    self.source = filename
 
-    # open file and get all lines
-    opener = gzip.open if filename.endswith('.gz') else open
-    with opener(filename, 'rb') as fd:
-      lines = fd.readlines()
-    lines = [line.decode('utf-8') for line in lines]
+    # break text into lines
+    lines = text.split('\n')
 
     # break lines into raw data (columnar pieces)
     for line in lines:
@@ -100,6 +96,22 @@ class ColumnStats(object):
 
       # push new row into raw
       self.raw[cols[0]] = cols[1]
+
+  def read(self, filename):
+    """
+    Constructs a statistics structure from a 1D CSV file
+    Values default to int, then float, then str
+
+    Args:
+      filename (str) : name of file to open (auto .gz if given)
+    """
+    self.source = filename
+
+    # open file and get all lines
+    opener = gzip.open if filename.endswith('.gz') else open
+    with opener(filename, 'rb') as fd:
+      text = fd.read().decode('utf-8')
+    return self.load(text)
 
   def row_names(self):
     """
