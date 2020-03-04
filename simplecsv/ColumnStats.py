@@ -74,6 +74,11 @@ class ColumnStats(object):
 
     # break lines into raw data (columnar pieces)
     for line in lines:
+      # ignore empty lines
+      if not line:
+        continue
+
+      # split up columns
       cols = line.split(',')
       cols = [x.strip() for x in cols]
 
