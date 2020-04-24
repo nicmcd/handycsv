@@ -129,6 +129,10 @@ class GridStats(object):
       # push new row into rows list
       self.raw.append(cols)
 
+    # set the row and col index structures
+    self._index_row_col()
+
+  def _index_row_col(self):
     # create row/col index data structures
     for rowIdx in range(1, len(self.raw)):
       if self.raw[rowIdx][0] in self.rows:
@@ -299,3 +303,24 @@ class GridStats(object):
         removed.append(row)
 
     return removed
+
+  def transpose(self):
+    """
+    Returns a tranpose of this GridStats object
+    """
+
+    # Gets a tranpose of the structure
+    raw = [[None for _ in range(len(self.raw))]
+           for _ in range(len(self.raw[0]))]
+
+    # Copies the elements
+    for row in range(len(self.raw)):
+      for col in range(len(self.raw[0])):
+        raw[col][row] = self.raw[row][col]
+
+    # Create the new object
+    grid = GridStats()
+    grid.raw = raw
+    grid._index_row_col()
+
+    return grid
