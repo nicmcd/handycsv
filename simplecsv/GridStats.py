@@ -193,6 +193,15 @@ class GridStats(object):
     # filled
     return [self.raw[rowIdx][0] for rowIdx in range(1, len(self.raw))]
 
+  def __str__(self):
+    """
+    Returns the string representation in CSV format.
+    """
+    csv = ''
+    for row in self.raw:
+      csv += ','.join([str(x) for x in row]) + '\n'
+    return csv
+
   def write(self, filename):
     """
     Write the 2D grid to a 2D CSV file
@@ -206,8 +215,7 @@ class GridStats(object):
     # open file to write
     opener = gzip.open if filename.endswith('.gz') else open
     with opener(filename, 'wb') as fd:
-      for row in self.raw:
-        fd.write(bytes(','.join([str(x) for x in row]) + '\n', 'utf-8'))
+      fd.write(bytes(self.__str__(), 'utf-8'))
 
   def get(self, row, col, default=None):
     """
