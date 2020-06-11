@@ -45,6 +45,7 @@ class ColumnStats(object):
     Constructs a null structure
     """
     self.raw = {}
+    self.rows = []
     self.source = None
 
   def create(self, rows):
@@ -55,9 +56,11 @@ class ColumnStats(object):
       rows (list/set) : names of rows
     """
     self.raw = {}
+    self.rows = []
     self.source = None
     for row in rows:
       self.raw[row] = None
+      self.rows.append(row)
 
   def load(self, text):
     """
@@ -68,6 +71,7 @@ class ColumnStats(object):
       text (str) : 1D CSV txt
     """
     self.raw = {}
+    self.rows = []
 
     # break text into lines
     lines = text.split('\n')
@@ -101,6 +105,7 @@ class ColumnStats(object):
 
       # push new row into raw
       self.raw[cols[0]] = cols[1]
+      self.rows.append(cols[0])
 
   def read(self, filename):
     """
@@ -125,18 +130,25 @@ class ColumnStats(object):
     """
     return list(self.raw.keys)
 
-  def write(self, filename):
+  def write(self, filename, transpose=False):
     """
     Write the statisitcs to a 1D CSV file
 
     Args:
-      filename (str) : name of file to write (auto .gz if given)
+      filename (str)   : name of file to write (auto .gz if given)
+      transpose (bool) : transpose the ColumnStats before writing
     """
     # open file to write
     opener = gzip.open if filename.endswith('.gz') else open
     with opener(filename, 'wb') as fd:
-      for key in self.raw.keys():
-        fd.write(bytes('{0},{1}\n'.format(key, self.raw[key]), 'utf-8'))
+      if not transpose:
+        for row in self.rows:
+          fd.write(bytes('{0},{1}\n'.format(row, self.raw[row]), 'utf-8'))
+      else:
+        vals = self.rows
+        fd.write(bytes(','.join([str(x) for x in vals]) + '\n', 'utf-8'))
+        vals = [self.raw[r] for r in self.rows]
+        fd.write(bytes(','.join([str(x) for x in vals]) + '\n', 'utf-8'))
 
   def get(self, row, default=None):
     """

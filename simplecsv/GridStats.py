@@ -202,20 +202,23 @@ class GridStats(object):
       csv += ','.join([str(x) for x in row]) + '\n'
     return csv
 
-  def write(self, filename):
+  def write(self, filename, transpose=False):
     """
     Write the 2D grid to a 2D CSV file
 
     Args:
-      filename (str) : name of file to write (auto .gz if given)
+      filename (str)   : name of file to write (auto .gz if given)
+      transpose (bool) : transpose the ColumnStats before writing
     """
-    if self.raw == None:
+    gs = self.transpose() if transpose else self
+
+    if gs.raw == None:
       raise ValueError('unintialized grid can not be written to a file')
 
     # open file to write
     opener = gzip.open if filename.endswith('.gz') else open
     with opener(filename, 'wb') as fd:
-      fd.write(bytes(self.__str__(), 'utf-8'))
+      fd.write(bytes(gs.__str__(), 'utf-8'))
 
   def get(self, row, col, default=None):
     """
