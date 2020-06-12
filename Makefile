@@ -1,18 +1,25 @@
-PYPKG := simplecsv
-
 .SUFFIXES:
-.PHONY: help install clean
+.PHONY: help install clean lint test benchmark count
 
 help:
-	@echo "options are: install clean"
+	@echo "options are: install clean lint test count"
 
 install:
-	python3 setup.py install --user
+	python3 setup.py install --user --record files.txt
+
+uninstall:
+	cat files.txt | xargs rm -rf
 
 clean:
-	rm -rf build dist $(PYPKG).egg-info $(PYPKG)/*.pyc $(PYPKG)/__pycache__
+	rm -rf build dist simplecsv.egg-info simplecsv/*.pyc simplecsv/__pycache__ test/*.pyc test/__pycache__
+
+lint:
+	pylint -r n simplecsv
+
+test:
+	python3 -m unittest -v -f
 
 count:
-	@wc $(PYPKG)/*.py | sort -n -k1
-	@echo "files : "$(shell echo $(PYPKG)/*.py | wc -w)
+	@wc simplecsv/*.py test/*.py | sort -n -k1
+	@echo "files : "$(shell echo simplecsv/*.py test/*.py | wc -w)
 	@echo "commits : "$(shell git rev-list HEAD --count) 

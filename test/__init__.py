@@ -29,8 +29,4 @@
  * POSSIBILITY OF SUCH DAMAGE.
 """
 
-from .column_stats import ColumnStats
-from .csv import Csv
-from .grid_stats import GridStats
-
-__version__ = '3.0.0'
+# this file needs to exist
