@@ -163,3 +163,9 @@ class TestGridStats(unittest.TestCase):
 
       os.remove(csvfile1)
       os.remove(csvfile2)
+
+    skeleton = simplecsv.GridStats.create('-', ['d', 'e', 'f'], ['a', 'b', 'c'])
+    stats = simplecsv.GridStats.load(text)
+    self.assertEqual(skeleton.head(), stats.head())
+    self.assertEqual(skeleton.row_names(), stats.row_names())
+    self.assertEqual(skeleton.column_names(), stats.column_names())

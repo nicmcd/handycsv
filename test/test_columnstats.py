@@ -115,3 +115,7 @@ class TestColumnStats(unittest.TestCase):
       self.assertEqual(stats, newstats)
 
       os.remove(csvfile1)
+
+    skeleton = simplecsv.ColumnStats.create(['-', 'd', 'e', 'f'])
+    stats = simplecsv.ColumnStats.load(text)
+    self.assertEqual(skeleton.row_names(), stats.row_names())

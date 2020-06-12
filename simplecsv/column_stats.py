@@ -71,7 +71,7 @@ class ColumnStats(object):
       row [int, float, str] : the row specifiers
     """
     stats = ColumnStats()
-    stats.csv = Csv(line_lengths=[2] * len(rows))
+    stats.csv = Csv(row_lengths=[2] * len(rows))
     for index, row in enumerate(list(rows)):
       stats.csv.set(index, 0, row)
     stats.__init_row_info()

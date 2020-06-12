@@ -84,7 +84,7 @@ class GridStats(object):
       columns [int, float, str] : the column specifiers
     """
     stats = GridStats()
-    stats.csv = Csv(line_lengths=[len(columns) + 1] * (len(rows) + 1))
+    stats.csv = Csv(row_lengths=[len(columns) + 1] * (len(rows) + 1))
     stats.csv.set(0, 0, head)
     for index, row in enumerate(list(rows)):
       stats.csv.set(index + 1, 0, row)
