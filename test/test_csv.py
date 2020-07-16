@@ -241,6 +241,130 @@ class TestCsv(unittest.TestCase):
     with self.assertRaises(IndexError):
       csv.remove_column(1)
 
+  k4x4Mixed = [
+    ['z', 'a', 'b', 'c'],
+    ['e', 0, 7, 5],
+    ['d', 6, 4, 2],
+    ['f', 3, 1, 8]
+  ]
+  k4x4Sorted_0 = [
+    ['d', 6, 4, 2],
+    ['e', 0, 7, 5],
+    ['f', 3, 1, 8],
+    ['z', 'a', 'b', 'c']
+  ]
+  k4x4Sorted_0r = [
+    ['z', 'a', 'b', 'c'],
+    ['f', 3, 1, 8],
+    ['e', 0, 7, 5],
+    ['d', 6, 4, 2]
+  ]
+  k4x4Sorted_1h = [
+    ['z', 'a', 'b', 'c'],
+    ['e', 0, 7, 5],
+    ['f', 3, 1, 8],
+    ['d', 6, 4, 2]
+  ]
+  k4x4Sorted_1hr = [
+    ['z', 'a', 'b', 'c'],
+    ['d', 6, 4, 2],
+    ['f', 3, 1, 8],
+    ['e', 0, 7, 5]
+  ]
+  k4x4Sorted_2h = [
+    ['z', 'a', 'b', 'c'],
+    ['f', 3, 1, 8],
+    ['d', 6, 4, 2],
+    ['e', 0, 7, 5]
+  ]
+  k4x4Sorted_2hr = [
+    ['z', 'a', 'b', 'c'],
+    ['e', 0, 7, 5],
+    ['d', 6, 4, 2],
+    ['f', 3, 1, 8]
+  ]
+  k4x4Sorted_3h = [
+    ['z', 'a', 'b', 'c'],
+    ['d', 6, 4, 2],
+    ['e', 0, 7, 5],
+    ['f', 3, 1, 8]
+  ]
+  k4x4Sorted_3hr = [
+    ['z', 'a', 'b', 'c'],
+    ['f', 3, 1, 8],
+    ['e', 0, 7, 5],
+    ['d', 6, 4, 2]
+  ]
+
+  def check_mixed(self, csv):
+    self.check(csv, TestCsv.k4x4Mixed)
+
+    # shape
+    self.assertTrue(csv.is_rectangular())
+    self.assertTrue(csv.is_square())
+
+    # sort 0
+    csvs = csv.sort(0)
+    self.check(csvs, TestCsv.k4x4Sorted_0)
+    csvs = csv.sort(0, reverse=False)
+    self.check(csvs, TestCsv.k4x4Sorted_0)
+    csvs = csv.sort(0, ignore_header=False)
+    self.check(csvs, TestCsv.k4x4Sorted_0)
+
+    # sort 0r
+    csvs = csv.sort(0, reverse=True)
+    self.check(csvs, TestCsv.k4x4Sorted_0r)
+
+    # sort 1h
+    csvs = csv.sort(1, ignore_header=True)
+    self.check(csvs, TestCsv.k4x4Sorted_1h)
+
+    # sort 1hr
+    csvs = csv.sort(1, ignore_header=True, reverse=True)
+    self.check(csvs, TestCsv.k4x4Sorted_1hr)
+
+    # sort 2h
+    csvs = csv.sort(2, ignore_header=True)
+    self.check(csvs, TestCsv.k4x4Sorted_2h)
+
+    # sort 2hr
+    csvs = csv.sort(2, ignore_header=True, reverse=True)
+    self.check(csvs, TestCsv.k4x4Sorted_2hr)
+
+    # sort 3h
+    csvs = csv.sort(3, ignore_header=True)
+    self.check(csvs, TestCsv.k4x4Sorted_3h)
+
+    # sort 3hr
+    csvs = csv.sort(3, ignore_header=True, reverse=True)
+    self.check(csvs, TestCsv.k4x4Sorted_3hr)
+
+    # sort -1h
+    csvs = csv.sort(-1, ignore_header=True)
+    self.check(csvs, TestCsv.k4x4Sorted_3h)
+
+    # sort -1hr
+    csvs = csv.sort(-1, ignore_header=True, reverse=True)
+    self.check(csvs, TestCsv.k4x4Sorted_3hr)
+
+    # sort invalid column
+    with self.assertRaises(IndexError):
+      csv.sort(4)
+
+  def test_autotype(self):
+    v = simplecsv.Csv.autotype('123')
+    self.assertIsInstance(v, int)
+    self.assertEqual(v, 123)
+
+    v = simplecsv.Csv.autotype('123.456')
+    self.assertIsInstance(v, float)
+    self.assertAlmostEqual(v, 123.456)
+
+    v = simplecsv.Csv.autotype('12hello45')
+    self.assertIsInstance(v, str)
+    self.assertAlmostEqual(v, '12hello45')
+
+
   def test_full(self):
     # default constructor test
     csv = simplecsv.Csv()
@@ -261,7 +385,8 @@ class TestCsv(unittest.TestCase):
       (TestCsv.k4x2, self.check_4x2),
       (TestCsv.k4x4, self.check_4x4),
       (TestCsv.kIrregular, self.check_irregular),
-      (TestCsv.kEmpty, self.check_empty)
+      (TestCsv.kEmpty, self.check_empty),
+      (TestCsv.k4x4Mixed, self.check_mixed)
     ]
 
     for raw, checker in tests:

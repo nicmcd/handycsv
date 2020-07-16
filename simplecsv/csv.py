@@ -311,3 +311,38 @@ class Csv(object):
     csv.raw = raw
 
     return csv
+
+  def sort(self, column_index, ignore_header=False, reverse=False):
+    """
+    Returns a sorted version of this CSV object
+
+    Args:
+      column_index (int)   : the column upon which to base the sorting
+      ignore_header (bool) : keep the first row in place
+      reverse (bool)       : reverse the sort operation
+    """
+    # Makes a list of tuples containing the field and the full row
+    scored_rows = []
+    for row_idx in range(self.num_rows()):
+      row = self.get_row(row_idx)  # copies the row
+      scored_rows.append((row[column_index], row))
+
+    # This new raw values
+    raw = []
+
+    # Handles ignore header
+    if ignore_header:
+      _, row = scored_rows.pop(0)
+      raw.append(row)
+
+    # Sort the scored rows
+    scored_rows.sort(reverse=reverse)
+    while scored_rows:
+      _, row = scored_rows.pop(0)
+      raw.append(row)
+
+    # Create the new object
+    csv = Csv()
+    csv.raw = raw
+
+    return csv
