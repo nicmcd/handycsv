@@ -63,6 +63,19 @@ class Csv(object):
       self.raw.append([''] * row_length)
 
   @staticmethod
+  def autotype(value):
+    """
+    Transforms the value automatically into an int, float, str
+    """
+    try:
+      return int(value)
+    except ValueError:
+      try:
+        return float(value)
+      except ValueError:
+        return str(value)
+
+  @staticmethod
   def load(text, transpose=False):
     """
     Constructs a CSV from a string.
@@ -85,15 +98,7 @@ class Csv(object):
 
       # transform values
       for idx in range(0, len(columns)):
-        column = columns[idx]
-        try:
-          column = int(column)
-        except ValueError:
-          try:
-            column = float(column)
-          except ValueError:
-            column = str(column)
-        columns[idx] = column
+        columns[idx] = Csv.autotype(columns[idx])
 
       # push new row into rows list
       csv.raw.append(columns)
