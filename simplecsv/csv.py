@@ -174,6 +174,53 @@ class Csv(object):
       csv += ','.join([str(x) for x in row]) + '\n'
     return csv
 
+  def pretty(self, precision=None, right_align=False):
+    """
+    Returns a pretty string representation.
+
+    Args:
+      precision (None or int) : precision of floating point values if specified
+      right_align (bool) : use right alignment instead of left alignment
+    """
+    def stringify(x):
+      if isinstance(x, float) and precision is not None:
+        return ('{:.' + str(precision) + 'f}').format(x)
+      else:
+        return str(x)
+
+    # Creates a properly stringified copy
+    raw = []
+    for r in range(len(self.raw)):
+      raw.append([])
+      for c in range(len(self.raw[r])):
+        raw[r].append(stringify(self.get(r, c)))
+
+    # Computes the max text width of each column
+    max_columns = max(len(r) for r in raw)
+    widths = [-1] * max_columns
+    for r in range(len(raw)):
+      for c in range(len(raw[r])):
+        widths[c] = max(widths[c], len(raw[r][c]))
+
+    # Modifies the string values with whitespace
+    for r in range(len(raw)):
+      for c in range(len(raw[r])):
+        spaces = widths[c] - len(raw[r][c])
+        assert spaces >= 0, 'Programmer error!!!'
+        if spaces == 0:
+          continue
+        whitespace = ' ' * spaces
+        if right_align:
+          raw[r][c] = whitespace + raw[r][c]
+        else:
+          raw[r][c] = raw[r][c] + whitespace
+
+    # Creates the final string
+    pcsv = ''
+    for row in raw:
+      pcsv += (' '.join(row)).rstrip() + '\n'
+    return pcsv
+
   def write(self, filename, transpose=False):
     """
     Write the CSV to a file.

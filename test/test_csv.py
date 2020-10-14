@@ -451,3 +451,37 @@ class TestCsv(unittest.TestCase):
 
         # remove
         os.remove(csvfile)
+
+  def test_pretty(self):
+    csv = simplecsv.Csv([2, 2, 3])
+    csv.set(0, 0, 'hello')
+    csv.set(0, 1, 89)
+    csv.set(1, 0, '')
+    csv.set(1, 1, 'why?')
+    csv.set(2, 0, 1.0/3.0)
+    csv.set(2, 1, 1234.1)
+    csv.set(2, 2, 'bye')
+
+    exp = (
+      'hello              89\n'
+      '                   why?\n'
+      '0.3333333333333333 1234.1 bye\n')
+    self.assertEqual(csv.pretty(), exp)
+
+    exp = (
+      'hello 89\n'
+      '      why?\n'
+      '0.333 1234.100 bye\n')
+    self.assertEqual(csv.pretty(3), exp)
+
+    exp = (
+      'hello   89\n'
+      '        why?\n'
+      '0.33333 1234.10000 bye\n')
+    self.assertEqual(csv.pretty(5), exp)
+
+    exp = (
+      '  hello         89\n'
+      '              why?\n'
+      '0.33333 1234.10000 bye\n')
+    self.assertEqual(csv.pretty(5, True), exp)
