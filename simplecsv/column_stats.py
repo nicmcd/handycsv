@@ -143,6 +143,12 @@ class ColumnStats(object):
     """
     return str(self.csv)
 
+  def pretty(self, precision=None, right_align=False):
+    """
+    Returns a pretty string.
+    """
+    return self.csv.pretty(precision=precision, right_align=right_align)
+
   def write(self, filename, transpose=False):
     """
     Write the ColumnStats to a CSV file
