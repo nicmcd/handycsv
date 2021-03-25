@@ -51,13 +51,13 @@ def find_version(*file_paths):
   raise RuntimeError("Unable to find version string.")
 
 setup(
-    name='simplecsv',
-    version=find_version('simplecsv', '__init__.py'),
+    name='handycsv',
+    version=find_version('handycsv', '__init__.py'),
     description='CSV files as objects',
     author='Nic McDonald',
     author_email='nicci02@hotmail.com',
     license='BSD',
-    url='http://github.com/nicmcd/simplecsv',
-    packages=['simplecsv'],
+    url='http://github.com/nicmcd/handycsv',
+    packages=['handycsv'],
     install_requires=[],
 )

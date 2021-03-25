@@ -11,15 +11,15 @@ uninstall:
 	cat files.txt | xargs rm -rf
 
 clean:
-	rm -rf build dist simplecsv.egg-info simplecsv/*.pyc simplecsv/__pycache__ test/*.pyc test/__pycache__
+	rm -rf build dist handycsv.egg-info handycsv/*.pyc handycsv/__pycache__ test/*.pyc test/__pycache__
 
 lint:
-	pylint -r n simplecsv
+	pylint -r n handycsv
 
 test:
 	python3 -m unittest -v -f
 
 count:
-	@wc simplecsv/*.py test/*.py | sort -n -k1
-	@echo "files : "$(shell echo simplecsv/*.py test/*.py | wc -w)
+	@wc handycsv/*.py test/*.py | sort -n -k1
+	@echo "files : "$(shell echo handycsv/*.py test/*.py | wc -w)
 	@echo "commits : "$(shell git rev-list HEAD --count) 

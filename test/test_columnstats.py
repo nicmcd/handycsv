@@ -34,7 +34,7 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import os
-import simplecsv
+import handycsv
 import unittest
 import tempfile
 
@@ -52,10 +52,10 @@ class TestColumnStats(unittest.TestCase):
     ['f', 6]
   ]
 
-  def test_simple(self):
+  def test_handy(self):
     text = TestColumnStats.make_str(TestColumnStats.k4x2)
 
-    stats = simplecsv.ColumnStats.load(text)
+    stats = handycsv.ColumnStats.load(text)
     self.assertEqual(stats.row_names(), ['-', 'd', 'e', 'f'])
     self.assertEqual(stats.get('d'), 0)
     self.assertEqual(stats.get('f'), 6)
@@ -84,7 +84,7 @@ class TestColumnStats(unittest.TestCase):
     with self.assertRaises(IndexError):
       stats.get('e')
 
-    stats = simplecsv.ColumnStats.load(text)
+    stats = handycsv.ColumnStats.load(text)
 
     self.assertEqual(stats.filter_rows('3'), ['e'])
     self.assertEqual(stats.row_names(), ['-', 'd', 'f'])
@@ -93,16 +93,16 @@ class TestColumnStats(unittest.TestCase):
     with self.assertRaises(IndexError):
       stats.get('e')
 
-    stats = simplecsv.ColumnStats.load(text)
+    stats = handycsv.ColumnStats.load(text)
     self.assertEqual(stats.filter_rows('\d'), ['d', 'e', 'f'])
 
-    stats = simplecsv.ColumnStats.load(text)
+    stats = handycsv.ColumnStats.load(text)
     self.assertEqual(stats.filter_rows('\d', invert=True), ['-'])
 
-    stats = simplecsv.ColumnStats.load(text)
+    stats = handycsv.ColumnStats.load(text)
     self.assertEqual(stats.filter_rows('foo'), [])
 
-    stats = simplecsv.ColumnStats.load(text)
+    stats = handycsv.ColumnStats.load(text)
     with self.assertRaises(IndexError):
       stats.filter_rows('foo', invert=True)
 
@@ -110,12 +110,12 @@ class TestColumnStats(unittest.TestCase):
       _, csvfile1 = tempfile.mkstemp(prefix='TestColumnStats', suffix=ext)
       stats.write(csvfile1, transpose=True)
 
-      newstats = simplecsv.ColumnStats.read(csvfile1, transpose=True)
+      newstats = handycsv.ColumnStats.read(csvfile1, transpose=True)
       self.assertEqual(newstats.source, csvfile1)
       self.assertEqual(stats, newstats)
 
       os.remove(csvfile1)
 
-    skeleton = simplecsv.ColumnStats.create(['-', 'd', 'e', 'f'])
-    stats = simplecsv.ColumnStats.load(text)
+    skeleton = handycsv.ColumnStats.create(['-', 'd', 'e', 'f'])
+    stats = handycsv.ColumnStats.load(text)
     self.assertEqual(skeleton.row_names(), stats.row_names())

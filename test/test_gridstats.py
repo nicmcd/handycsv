@@ -34,7 +34,7 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import os
-import simplecsv
+import handycsv
 import unittest
 import tempfile
 
@@ -52,10 +52,10 @@ class TestGridStats(unittest.TestCase):
     ['f', 6, 7, 8]
   ]
 
-  def test_simple(self):
+  def test_handy(self):
     text = TestGridStats.make_str(TestGridStats.k4x4)
 
-    stats = simplecsv.GridStats.load(text)
+    stats = handycsv.GridStats.load(text)
     self.assertEqual(stats.row_names(), ['d', 'e', 'f'])
     self.assertEqual(stats.column_names(), ['a', 'b', 'c'])
     self.assertEqual(stats.get('d', 'c'), 2)
@@ -103,7 +103,7 @@ class TestGridStats(unittest.TestCase):
     with self.assertRaises(IndexError):
       stats.get('e', 'b')
 
-    stats = simplecsv.GridStats.load(text)
+    stats = handycsv.GridStats.load(text)
 
     with self.assertRaises(IndexError):
       stats.filter_rows('z', '4')
@@ -122,22 +122,22 @@ class TestGridStats(unittest.TestCase):
     with self.assertRaises(IndexError):
       stats.get('e', 'b')
 
-    stats = simplecsv.GridStats.load(text)
+    stats = handycsv.GridStats.load(text)
     stats.set('d', 'b', 'foo')
     self.assertEqual(stats.filter_rows('b', '\d'), ['e', 'f'])
 
-    stats = simplecsv.GridStats.load(text)
+    stats = handycsv.GridStats.load(text)
     stats.set('d', 'b', 'foo')
     self.assertEqual(stats.filter_rows('b', '\d', invert=True), ['d'])
 
-    stats = simplecsv.GridStats.load(text)
+    stats = handycsv.GridStats.load(text)
     self.assertEqual(stats.filter_rows('b', 'foo'), [])
 
-    stats = simplecsv.GridStats.load(text)
+    stats = handycsv.GridStats.load(text)
     self.assertEqual(stats.filter_rows('b', 'foo', invert=True),
                      ['d', 'e', 'f'])
 
-    stats = simplecsv.GridStats.load(text)
+    stats = handycsv.GridStats.load(text)
     stats_t = stats.transpose()
     self.assertEqual(stats_t.row_names(), ['a', 'b', 'c'])
     self.assertEqual(stats_t.column_names(), ['d', 'e', 'f'])
@@ -150,22 +150,22 @@ class TestGridStats(unittest.TestCase):
       stats.write(csvfile1, transpose=True)
       stats_t.write(csvfile2, transpose=True)
 
-      self.assertEqual(simplecsv.GridStats.read(csvfile1).source, csvfile1)
-      self.assertEqual(simplecsv.GridStats.read(csvfile2).source, csvfile2)
+      self.assertEqual(handycsv.GridStats.read(csvfile1).source, csvfile1)
+      self.assertEqual(handycsv.GridStats.read(csvfile2).source, csvfile2)
 
-      self.assertEqual(stats, simplecsv.GridStats.read(csvfile2))
-      self.assertEqual(stats_t, simplecsv.GridStats.read(csvfile1))
+      self.assertEqual(stats, handycsv.GridStats.read(csvfile2))
+      self.assertEqual(stats_t, handycsv.GridStats.read(csvfile1))
 
       self.assertEqual(stats,
-                       simplecsv.GridStats.read(csvfile1, transpose=True))
+                       handycsv.GridStats.read(csvfile1, transpose=True))
       self.assertEqual(stats_t,
-                       simplecsv.GridStats.read(csvfile2, transpose=True))
+                       handycsv.GridStats.read(csvfile2, transpose=True))
 
       os.remove(csvfile1)
       os.remove(csvfile2)
 
-    skeleton = simplecsv.GridStats.create('-', ['d', 'e', 'f'], ['a', 'b', 'c'])
-    stats = simplecsv.GridStats.load(text)
+    skeleton = handycsv.GridStats.create('-', ['d', 'e', 'f'], ['a', 'b', 'c'])
+    stats = handycsv.GridStats.load(text)
     self.assertEqual(skeleton.head(), stats.head())
     self.assertEqual(skeleton.row_names(), stats.row_names())
     self.assertEqual(skeleton.column_names(), stats.column_names())

@@ -34,7 +34,7 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import os
-import simplecsv
+import handycsv
 import unittest
 import tempfile
 
@@ -352,33 +352,33 @@ class TestCsv(unittest.TestCase):
       csv.sort(4)
 
   def test_autotype(self):
-    v = simplecsv.Csv.autotype('123')
+    v = handycsv.Csv.autotype('123')
     self.assertIsInstance(v, int)
     self.assertEqual(v, 123)
 
-    v = simplecsv.Csv.autotype('123.456')
+    v = handycsv.Csv.autotype('123.456')
     self.assertIsInstance(v, float)
     self.assertAlmostEqual(v, 123.456)
 
-    v = simplecsv.Csv.autotype('12hello45')
+    v = handycsv.Csv.autotype('12hello45')
     self.assertIsInstance(v, str)
     self.assertAlmostEqual(v, '12hello45')
 
 
   def test_full(self):
     # default constructor test
-    csv = simplecsv.Csv()
+    csv = handycsv.Csv()
     self.check(csv, TestCsv.kEmpty)
-    csv = simplecsv.Csv(row_lengths=[1])
+    csv = handycsv.Csv(row_lengths=[1])
     self.check(csv, TestCsv.kEmpty)
 
     # bad constructor args
     with self.assertRaises(ValueError):
-      simplecsv.Csv(row_lengths=[])
+      handycsv.Csv(row_lengths=[])
     with self.assertRaises(ValueError):
-      simplecsv.Csv(row_lengths=[0])
+      handycsv.Csv(row_lengths=[0])
     with self.assertRaises(ValueError):
-      simplecsv.Csv(row_lengths=[1, 0, 2])
+      handycsv.Csv(row_lengths=[1, 0, 2])
 
     # specific test sweeps
     tests = [
@@ -401,7 +401,7 @@ class TestCsv(unittest.TestCase):
       # read, check, write, and remove
       for csvfile in [plain_file, compressed_file]:
         # read
-        csv = simplecsv.Csv.read(csvfile)
+        csv = handycsv.Csv.read(csvfile)
 
         # check
         self.assertEqual(csv.source, csvfile)
@@ -416,7 +416,7 @@ class TestCsv(unittest.TestCase):
           csv.write(outfile)
 
           # read
-          csv2 = simplecsv.Csv.read(outfile)
+          csv2 = handycsv.Csv.read(outfile)
 
           # check
           self.assertEqual(str(csv2), str(csv))
@@ -444,7 +444,7 @@ class TestCsv(unittest.TestCase):
       # read, check, and remove
       for csvfile in [plain_file, compressed_file]:
         # read
-        csv = simplecsv.Csv.read(csvfile)
+        csv = handycsv.Csv.read(csvfile)
 
         # check
         self.assertEqual(str(csv), outtext)
@@ -453,7 +453,7 @@ class TestCsv(unittest.TestCase):
         os.remove(csvfile)
 
   def test_pretty(self):
-    csv = simplecsv.Csv([2, 2, 3])
+    csv = handycsv.Csv([2, 2, 3])
     csv.set(0, 0, 'hello')
     csv.set(0, 1, 89)
     csv.set(1, 0, '')
