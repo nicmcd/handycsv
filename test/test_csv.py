@@ -485,3 +485,49 @@ class TestCsv(unittest.TestCase):
       '              why?\n'
       '0.33333 1234.10000 bye\n')
     self.assertEqual(csv.pretty(5, True), exp)
+
+  def test_add_row(self):
+    csv = handycsv.Csv([2, 1, 3])
+    csv.set(0, 0, 'd')
+    csv.set(0, 1, 0)
+    csv.set(1, 0, '5')
+    csv.set(2, 0, 'e')
+    csv.set(2, 1, 3)
+    csv.set(2, 2, 4)
+
+    self.assertEqual(csv.num_rows(), 3)
+
+    csv.add_row(['z', 5, 'y', 9], 2)
+
+    self.assertEqual(csv.num_rows(), 4)
+    self.assertEqual(csv.row_lengths(), [2, 1, 4, 3])
+    self.assertEqual(csv.get(2, 0), 'z')
+    self.assertEqual(csv.get(2, 1), 5)
+    self.assertEqual(csv.get(2, 2), 'y')
+    self.assertEqual(csv.get(2, 3), 9)
+    self.assertEqual(csv.get(1, 0), '5')
+    self.assertEqual(csv.get(3, 0), 'e')
+    self.assertEqual(csv.get(3, 1), 3)
+    self.assertEqual(csv.get(3, 2), 4)
+
+  def test_add_column(self):
+    csv = handycsv.Csv([2, 1, 3])
+    csv.set(0, 0, 'd')
+    csv.set(0, 1, 0)
+    csv.set(1, 0, '5')
+    csv.set(2, 0, 'e')
+    csv.set(2, 1, 3)
+    csv.set(2, 2, 4)
+
+    self.assertEqual(csv.num_rows(), 3)
+
+    csv.add_column(['x', 'y', 'z'], 0)
+
+    self.assertEqual(csv.num_rows(), 3)
+    self.assertEqual(csv.row_lengths(), [3, 2, 4])
+    self.assertEqual(csv.get(0, 0), 'x')
+    self.assertEqual(csv.get(1, 0), 'y')
+    self.assertEqual(csv.get(2, 0), 'z')
+    self.assertEqual(csv.get(0, 1), 'd')
+    self.assertEqual(csv.get(1, 1), '5')
+    self.assertEqual(csv.get(2, 1), 'e')

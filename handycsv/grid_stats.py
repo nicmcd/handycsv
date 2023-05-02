@@ -256,9 +256,59 @@ class GridStats(object):
     try:
       row_index = self.row_index[row]
     except KeyError:
-      raise IndexError('row={0} doesn\'t exist'.format(row))
+      raise IndexError(f'row={row} doesn\'t exist')
     self.csv.remove_row(row_index)
     self.__init_row_info()
+
+  def remove_column(self, column):
+    """
+    This removes the specified column.
+
+    Args
+      column (str) : the column identifier
+    """
+    try:
+      column_index = self.column_index[column]
+    except KeyError:
+      raise IndexError(f'column={column} doesn\'t exist')
+    self.csv.remove_column(column_index)
+    self.__init_column_info()
+
+  def add_row(self, name, columns, index):
+    """
+    This adds a new row the the grid.
+
+    Args:
+      name    (str)      : the name of the row
+      columns ([values]) : dict of column values
+      index   (int)      : placement of row
+    """
+    if name in self.row_names():
+      raise ValueError(f'row {name} already exists')
+    new_row = [name]
+    for column in self.column_names():
+      new_row.append(columns[column])
+    self.csv.add_row(new_row, index + 1)
+    self.__init_row_info()
+    self.__init_column_info()
+
+  def add_column(self, name, rows, index):
+    """
+    This adds a new columns the the grid.
+
+    Args:
+      name  (str)      : the name of the colu,n
+      rows  ([values]) : dict of row values
+      index (int)      : placement of column
+    """
+    if name in self.column_names():
+      raise ValueError(f'column {name} already exists')
+    new_column = [name]
+    for row in self.row_names():
+      new_column.append(rows[row])
+    self.csv.add_column(new_column, index + 1)
+    self.__init_row_info()
+    self.__init_column_info()
 
   def filter_rows(self, column, regex, invert=False):
     """

@@ -201,6 +201,20 @@ class ColumnStats(object):
     self.csv.remove_row(row_index)
     self.__init_row_info()
 
+  def add_row(self, name, value, index):
+    """
+    This adds the specified row.
+
+    Args:
+      name (str)    : the name of the row
+      value (value) : the value of the row
+    """
+    if name in self.row_names():
+      raise ValueError(f'row {name} already exists')
+    new_row = [name, value]
+    self.csv.add_row(new_row, index)
+    self.__init_row_info()
+
   def filter_rows(self, regex, invert=False):
     """
     This filter the data into a subset. It removes rows wherein the value

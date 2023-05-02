@@ -317,6 +317,36 @@ class Csv(object):
     for row in range(self.num_rows()):
       self.raw[row].pop(column)
 
+  def add_row(self, row, index):
+    """
+    This adds a row at the specified index.
+
+    Args:
+      row   ([values]) : the new row contents
+      index (int)      : the new row's index
+    """
+    new_row = []
+    for cell in row:
+      new_row.append(cell)
+    self.raw.insert(index, new_row)
+
+  def add_column(self, column, index):
+    """
+    This adds a column at the specified index.
+
+    Args:
+      column ([values]) : the new column contents
+      index  (int)      : the new column's index
+    """
+    if len(column) != self.num_rows():
+      raise ValueError('The length of column must match the current number of '
+                       'rows')
+    new_col = []
+    for cell in column:
+      new_col.append(cell)
+    for row_index in range(self.num_rows()):
+      self.raw[row_index].insert(index, new_col[row_index])
+
   def is_rectangular(self):
     """
     Return True iff the Csv is rectangular.
