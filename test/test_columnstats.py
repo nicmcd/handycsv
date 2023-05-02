@@ -127,3 +127,11 @@ class TestColumnStats(unittest.TestCase):
     self.assertEqual(stats.get('g'), 7)
     self.assertEqual(stats.get('e'), 3)
     self.assertEqual(stats.get('f'), 6)
+
+    skeleton = handycsv.ColumnStats.create(['-', 'd', 'e', 'f', 'g'])
+    stats = handycsv.ColumnStats.load(text)
+    stats.add_row('g', 7)
+    self.assertEqual(skeleton.row_names(), stats.row_names())
+    self.assertEqual(stats.get('g'), 7)
+    self.assertEqual(stats.get('e'), 3)
+    self.assertEqual(stats.get('f'), 6)

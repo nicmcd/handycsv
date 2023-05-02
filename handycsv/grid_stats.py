@@ -274,38 +274,42 @@ class GridStats(object):
     self.csv.remove_column(column_index)
     self.__init_column_info()
 
-  def add_row(self, name, columns, index):
+  def add_row(self, name, columns, index=None):
     """
     This adds a new row the the grid.
 
     Args:
       name    (str)      : the name of the row
       columns ([values]) : dict of column values
-      index   (int)      : placement of row
+      index   (int)      : placement of row (None for end)
     """
     if name in self.row_names():
       raise ValueError(f'row {name} already exists')
     new_row = [name]
     for column in self.column_names():
       new_row.append(columns[column])
+    if index is None:
+      index = len(self.row_names())
     self.csv.add_row(new_row, index + 1)
     self.__init_row_info()
     self.__init_column_info()
 
-  def add_column(self, name, rows, index):
+  def add_column(self, name, rows, index=None):
     """
     This adds a new columns the the grid.
 
     Args:
       name  (str)      : the name of the colu,n
       rows  ([values]) : dict of row values
-      index (int)      : placement of column
+      index (int)      : placement of column (None for end)
     """
     if name in self.column_names():
       raise ValueError(f'column {name} already exists')
     new_column = [name]
     for row in self.row_names():
       new_column.append(rows[row])
+    if index is None:
+      index = len(self.column_names())
     self.csv.add_column(new_column, index + 1)
     self.__init_row_info()
     self.__init_column_info()

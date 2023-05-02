@@ -198,3 +198,19 @@ class TestGridStats(unittest.TestCase):
     self.assertEqual(stats.get('d', 'z'), 9)
     self.assertEqual(stats.get('d', 'a'), 0)
     self.assertEqual(stats.get('d', 'c'), 2)
+
+    stats = handycsv.GridStats.load(text)
+    stats.add_column('z', {'d': 9, 'e': 8, 'f': 7})
+    skeleton = handycsv.GridStats.create('-', ['d', 'e', 'f'],
+                                         ['a', 'b', 'c', 'z'])
+    self.assertEqual(skeleton.head(), stats.head())
+    self.assertEqual(skeleton.row_names(), stats.row_names())
+    self.assertEqual(skeleton.column_names(), stats.column_names())
+
+    stats = handycsv.GridStats.load(text)
+    stats.add_row('g', {'a': 9, 'b': 8, 'c': 7})
+    skeleton = handycsv.GridStats.create('-', ['d', 'e', 'f', 'g'],
+                                         ['a', 'b', 'c'])
+    self.assertEqual(skeleton.head(), stats.head())
+    self.assertEqual(skeleton.row_names(), stats.row_names())
+    self.assertEqual(skeleton.column_names(), stats.column_names())

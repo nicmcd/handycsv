@@ -201,17 +201,20 @@ class ColumnStats(object):
     self.csv.remove_row(row_index)
     self.__init_row_info()
 
-  def add_row(self, name, value, index):
+  def add_row(self, name, value, index=None):
     """
     This adds the specified row.
 
     Args:
-      name (str)    : the name of the row
+      name  (str)   : the name of the row
       value (value) : the value of the row
+      index (int)   : location of row (None for end)
     """
     if name in self.row_names():
       raise ValueError(f'row {name} already exists')
     new_row = [name, value]
+    if index is None:
+      index = len(self.row_names())
     self.csv.add_row(new_row, index)
     self.__init_row_info()
 
