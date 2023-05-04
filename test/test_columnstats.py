@@ -42,8 +42,9 @@ import tempfile
 class TestColumnStats(unittest.TestCase):
 
   @staticmethod
-  def make_str(raw_vals):
-    return ''.join(','.join([str(v) for v in row]) + '\n' for row in raw_vals)
+  def make_str(raw_vals, delimiter=','):
+    return ''.join(delimiter.join([str(v) for v in row]) + '\n'
+                   for row in raw_vals)
 
   k4x2 = [
     ['-', 'a'],
@@ -135,3 +136,7 @@ class TestColumnStats(unittest.TestCase):
     self.assertEqual(stats.get('g'), 7)
     self.assertEqual(stats.get('e'), 3)
     self.assertEqual(stats.get('f'), 6)
+
+    text = TestColumnStats.make_str(TestColumnStats.k4x2, delimiter=';')
+    stats = handycsv.ColumnStats.load(text, delimiter=';')
+    self.assertEqual(text, stats.to_string(delimiter=';'))

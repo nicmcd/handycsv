@@ -42,8 +42,8 @@ import tempfile
 class TestCsv(unittest.TestCase):
 
   @staticmethod
-  def make_str(raw_vals):
-    return ''.join(','.join([str(v) for v in row]) + '\n' for row in raw_vals)
+  def make_str(raw_vals, delimiter=','):
+    return ''.join(delimiter.join([str(v) for v in row]) + '\n' for row in raw_vals)
 
   def check(self, csv, raw):
     # structure
@@ -217,6 +217,11 @@ class TestCsv(unittest.TestCase):
     # transpose (again)
     with self.assertRaises(IndexError):
       csv.transpose()
+
+  def test_xsv(self):
+    text = TestCsv.make_str(TestCsv.kIrregular, delimiter=';')
+    csv = handycsv.Csv.load(text, delimiter=';')
+    self.assertEqual(text, csv.to_string(delimiter=';'))
 
   kEmpty = [['']]
 

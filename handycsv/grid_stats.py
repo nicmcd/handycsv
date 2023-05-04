@@ -106,7 +106,7 @@ class GridStats(object):
     return stats
 
   @staticmethod
-  def load(text, transpose=False):
+  def load(text, transpose=False, delimiter=','):
     """
     Constructs a GridStats from a string
     Values default to int, then float, then str
@@ -114,8 +114,9 @@ class GridStats(object):
     Args:
       text      (str)  : text of the grid
       transpose (bool) : to transpose the input
+      delimiter (str)  : value separator
     """
-    csv = Csv.load(text, transpose=transpose)
+    csv = Csv.load(text, transpose=transpose, delimiter=delimiter)
     return GridStats.make_from_csv(csv)
 
   @staticmethod
@@ -164,6 +165,15 @@ class GridStats(object):
     Returns the string representation in CSV format.
     """
     return str(self.csv)
+
+  def to_string(self, delimiter=','):
+    """
+    Returns the string representation in xSV format.
+
+    Args:
+      delimiter (str) : delimiter for value separation
+    """
+    return self.csv.to_string(delimiter)
 
   def pretty(self, precision=None, right_align=False):
     """

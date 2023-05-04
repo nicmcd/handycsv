@@ -42,8 +42,8 @@ import tempfile
 class TestGridStats(unittest.TestCase):
 
   @staticmethod
-  def make_str(raw_vals):
-    return ''.join(','.join([str(v) for v in row]) + '\n' for row in raw_vals)
+  def make_str(raw_vals, delimiter=','):
+    return ''.join(delimiter.join([str(v) for v in row]) + '\n' for row in raw_vals)
 
   k4x4 = [
     ['-', 'a', 'b', 'c'],
@@ -214,3 +214,7 @@ class TestGridStats(unittest.TestCase):
     self.assertEqual(skeleton.head(), stats.head())
     self.assertEqual(skeleton.row_names(), stats.row_names())
     self.assertEqual(skeleton.column_names(), stats.column_names())
+
+    text = TestGridStats.make_str(TestGridStats.k4x4, delimiter=';')
+    stats = handycsv.GridStats.load(text, delimiter=';')
+    self.assertEqual(text, stats.to_string(delimiter=';'))

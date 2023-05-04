@@ -71,7 +71,7 @@ class Csv(object):
         return str(value)
 
   @staticmethod
-  def load(text, transpose=False):
+  def load(text, transpose=False, delimiter=','):
     """
     Constructs a CSV from a string.
     Values default to int, then float, then str.
@@ -79,6 +79,7 @@ class Csv(object):
     Args:
       text (str)       : text of the Csv
       transpose (bool) : to transpose the Csv
+      delimiter (str)  : value separator
     """
     csv = Csv()
     csv.raw = []
@@ -88,7 +89,7 @@ class Csv(object):
 
     # break lines into raw data (columnar pieces)
     for line in lines:
-      columns = line.split(',')
+      columns = line.split(delimiter)
       columns = [x.strip() for x in columns]
 
       # transform values
@@ -164,10 +165,19 @@ class Csv(object):
     """
     Returns the string representation in CSV format.
     """
-    csv = ''
+    return self.to_string()
+
+  def to_string(self, delimiter=','):
+    """
+    Returns the string representation in xSV format.
+
+    Args:
+      delimiter (str) : delimiter for value separation
+    """
+    xsv = ''
     for row in self.raw:
-      csv += ','.join([str(x) for x in row]) + '\n'
-    return csv
+      xsv += delimiter.join([str(x) for x in row]) + '\n'
+    return xsv
 
   def pretty(self, precision=None, right_align=False):
     """
