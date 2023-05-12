@@ -33,4 +33,4 @@ from .column_stats import ColumnStats
 from .csv import Csv
 from .grid_stats import GridStats
 
-__version__ = '4.3.0'
+__version__ = '4.4.0'

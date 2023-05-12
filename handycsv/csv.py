@@ -226,7 +226,7 @@ class Csv(object):
       pcsv += (' '.join(row)).rstrip() + '\n'
     return pcsv
 
-  def write(self, filename, transpose=False):
+  def write(self, filename, transpose=False, delimiter=','):
     """
     Write the CSV to a file.
 
@@ -242,7 +242,7 @@ class Csv(object):
     # open file to write
     opener = gzip.open if filename.endswith('.gz') else open
     with opener(filename, 'wb') as fd:
-      fd.write(bytes(csv.__str__(), 'utf-8'))
+      fd.write(bytes(csv.to_string(delimiter=delimiter), 'utf-8'))
 
   def get_row(self, row):
     """

@@ -154,7 +154,7 @@ class ColumnStats(object):
     """
     return self.csv.pretty(precision=precision, right_align=right_align)
 
-  def write(self, filename, transpose=False):
+  def write(self, filename, transpose=False, delimiter=','):
     """
     Write the ColumnStats to a CSV file
 
@@ -162,7 +162,7 @@ class ColumnStats(object):
       filename (str)   : name of file to write (auto .gz if given)
       transpose (bool) : transpose the ColumnStats before writing
     """
-    self.csv.write(filename, transpose=transpose)
+    self.csv.write(filename, transpose=transpose, delimiter=delimiter)
 
   def get(self, row, default=None):
     """
